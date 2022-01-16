@@ -102,7 +102,7 @@ public class SimpleGenerator : MonoBehaviour
     private void IncreaseCurrentPart()
     {
         _currentPart++;
-        if (_currentPart > 30)
+        if (_currentPart > 10)
         {
             _currentDifficulty++;
             _currentPart = 0;

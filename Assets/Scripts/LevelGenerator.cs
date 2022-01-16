@@ -161,7 +161,7 @@ public class LevelGenerator : MonoBehaviour
 
         StartCoroutine("LevelSpeedup", new SpeedUpParams
         {
-            Time = 0.5f,
+            Time = 1.5f,
             TargetSpeed = DefaultSpeed,
             TargetFov = 70f
         });

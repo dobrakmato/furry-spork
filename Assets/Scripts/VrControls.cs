@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Google.XR.Cardboard;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class VrControls : MonoBehaviour
     
     
     public float HorizontalSensitivity = 30f;
+
+    private float _smoothHorizontal = 0f;
     
     // Start is called before the first frame update
     void Start()
@@ -18,15 +21,18 @@ public class VrControls : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float verticalAngle = Vector3.SignedAngle(transform.forward, Vector3.forward, Vector3.right);
         bool isPressed = verticalAngle > 0.0;
 
         ctrl.shouldAscendBecauseOfVr = isPressed;
         var rawAngle = Vector3.SignedAngle(transform.forward, -Vector3.forward, -Vector3.up);
+
+        var nextHorInput = Mathf.Clamp(rawAngle, -HorizontalSensitivity, HorizontalSensitivity) / HorizontalSensitivity;
+        _smoothHorizontal = Mathf.Lerp(_smoothHorizontal, nextHorInput, 0.6f);
         
-        ctrl.horizontalInput = Mathf.Clamp(rawAngle, -HorizontalSensitivity, HorizontalSensitivity) / HorizontalSensitivity;
+        ctrl.horizontalInput = _smoothHorizontal;
 
         if (Api.IsGearButtonPressed)
         {

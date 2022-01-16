@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.Serialization.Formatters;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,6 +22,8 @@ public class AirplaneController : MonoBehaviour
     public Slider LevelProgressBarGui;
     public Text CoinCountGui;
     public Text DiamondCountGui;
+    public GameObject VrGui;
+    public GameObject VrScoreGui;
 
     [Header("Audio")] public AudioSource FireAlarm;
 
@@ -40,6 +43,8 @@ public class AirplaneController : MonoBehaviour
     private bool isIgnited;
     private float barrelRoll;
 
+    private TextMeshProUGUI _vrScoreGuiMesh;
+
     void Start()
     {
         if (Application.isMobilePlatform)
@@ -52,6 +57,8 @@ public class AirplaneController : MonoBehaviour
         CoinCountGui.text = ((int) currentCoinCount).ToString();
         var currentDiamondCount = PlayerPrefs.GetFloat("Diamonds", 0);
         DiamondCountGui.text = ((int) currentDiamondCount).ToString();
+
+        _vrScoreGuiMesh = VrScoreGui.GetComponent<TextMeshProUGUI>();
 
         startPosition = transform.position;
         Invoke("DoABarrelRoll", Random.Range(5f, 20f));
@@ -97,6 +104,7 @@ public class AirplaneController : MonoBehaviour
         else
         {
             ScoreGui.text = "You: " + (int) Score + " pts";
+            _vrScoreGuiMesh.SetText("Score: " + (int) Score + " pts");
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -242,6 +250,10 @@ public class AirplaneController : MonoBehaviour
         // restart
         isDead = false;
         isAscendingBecauseOfStart = true;
+        
+        VrGui.SetActive(false);
+        _vrScoreGuiMesh.gameObject.SetActive(true);
+        
         Invoke("StopStartAscension", 0.3f);
         FindObjectOfType<LevelGenerator>().RestartLevel();
     }
